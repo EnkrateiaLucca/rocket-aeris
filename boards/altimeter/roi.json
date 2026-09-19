@@ -1,0 +1,7 @@
+{
+  "note": "Region of interest simulated, in mm from the board's bottom-left corner. A full board is too heavy to simulate.",
+  "x0": 39,
+  "y0": 46,
+  "x1": 55,
+  "y1": 67
+}

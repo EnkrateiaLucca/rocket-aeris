@@ -1,0 +1,133 @@
+{
+  "parts": {
+    "2920L600/24SLER": {
+      "kind": "fuse",
+      "v_max": 24,
+      "i_max": 6.0,
+      "p_max": 2.5,
+      "source": "Page 3, Electrical Characteristics (Continued), row '2920L600/24SL LF60J': I hold 6.00 A, I trip 12.00 A, V max 24 Vdc, I max 50 A (fault current, not continuous), P d typ. 2.5 W; page 10 Packaging row '2920L600/24SL 2920L600/24SLER' confirms I hold 6.00 A",
+      "datasheet": "2920L600_24SLER.pdf"
+    },
+    "CMI-9605-1280T": {
+      "kind": "buzzer",
+      "v_max": 15,
+      "i_max": 0.03,
+      "p_max": null,
+      "source": "page 1, SPECIFICATIONS table: 'operating voltage' max 15 Vdc; 'current consumption at rated voltage' max 30 mA; no power dissipation stated",
+      "datasheet": "CMI-9605-1280T.pdf"
+    },
+    "IHLP2525CZER2R2M11": {
+      "kind": "inductor",
+      "v_max": 50,
+      "i_max": 7.0,
+      "p_max": null,
+      "source": "Page 1, Notes: 'Rated operating voltage (across inductor) = 50 V'; Page 1, STANDARD ELECTRICAL SPECIFICATIONS row L0 = 2.2 \u00b5H: DCR max 16.5 m\u03a9, heat rating current DC typ. 9.0 A, saturation current DC typ. 7.0 A (i_max = lower of the two, saturation 7.0 A)",
+      "datasheet": "IHLP2525CZER2R2M11.pdf"
+    },
+    "INA180A3": {
+      "kind": "amplifier",
+      "v_max": 26,
+      "i_max": 0.008,
+      "p_max": null,
+      "source": "Page 7, Table 7.1 Absolute Maximum Ratings: 'Analog inputs, IN+, IN\u2013 Common-mode: MAX 26 V' and 'Differential (VIN+) \u2013 (VIN\u2013): MAX 26 V' (Supply voltage, VS: MAX 6 V); 'Maximum output current, IOUT: 8 mA'. No power dissipation stated (only thermal resistances in Table 7.4). Ratings apply to all INA180 gain variants including A3.",
+      "datasheet": "INA180A3.pdf"
+    },
+    "INA210AIDCKT": {
+      "kind": "amplifier",
+      "v_max": 26,
+      "i_max": null,
+      "p_max": null,
+      "source": "Page 4, 5.1 Absolute Maximum Ratings: 'Supply voltage, VS' MAX 26 V; 'Common-mode (Version A)' MAX 26 V (INA210AIDCKT is Version A). 'Input current into any terminal' 5 mA is a pin clamp limit, not a main-path current, so i_max is null. No power dissipation stated on provided pages.",
+      "datasheet": "INA210AIDCKT.pdf"
+    },
+    "INA2180A4IDGKR": {
+      "kind": "amplifier",
+      "v_max": 26,
+      "i_max": 0.008,
+      "p_max": null,
+      "source": "Page 7, Table 7.1 Absolute Maximum Ratings: 'Analog inputs, IN+, IN\u2013 Common-mode: GND \u2013 0.3 to 26 V' and 'Differential (VIN+) \u2013 (VIN\u2013): \u201326 to 26 V' (Supply voltage, VS: 6 V max); 'Maximum output current, IOUT: 8 mA'. No power dissipation stated (only thermal resistance, Table 7.4, DGK VSSOP R\u03b8JA 177.9 \u00b0C/W).",
+      "datasheet": "INA2180A4IDGKR.pdf"
+    },
+    "NCV33275ST5.0T3G": {
+      "kind": "regulator",
+      "v_max": 13,
+      "i_max": 0.3,
+      "p_max": null,
+      "source": "Page 2, MAXIMUM RATINGS table: 'Input Voltage VCC 13 Vdc'; 'Output Current IO 300 mA'; 'Maximum Power Dissipation PD Internally Limited' (no numeric value; ST suffix SOT-223 R\u03b8JA 245 \u00b0C/W, R\u03b8JC 15 \u00b0C/W)",
+      "datasheet": "NCV33275ST5.0T3G.pdf"
+    },
+    "PMEG2010ER,115": {
+      "kind": "diode",
+      "v_max": 20,
+      "i_max": 1,
+      "p_max": 0.57,
+      "source": "Page 2, Table 5 Limiting values: VR reverse voltage (Tj = 25 \u00b0C) max 20 V; IF(AV) average forward current (\u03b4 = 0.5, f = 20 kHz, square wave) max 1 A; Ptot total power dissipation (Tamb \u2264 25 \u00b0C) max 0.57 W [2] FR4 PCB standard footprint (0.95 W [3] with 1 cm\u00b2 cathode pad, 1.8 W [1] ceramic PCB). IFSM 50 A excluded as non-repetitive surge.",
+      "datasheet": "PMEG2010ER.pdf"
+    },
+    "TLP3543A(TP1,F)": {
+      "kind": "relay",
+      "v_max": 30,
+      "i_max": 5,
+      "p_max": 0.7,
+      "source": "Page 3, Section 8 Absolute Maximum Ratings (Ta = 25 \u00b0C): OFF-state output terminal voltage VOFF = 30 V; ON-state current (A connection) ION = 5 A; Output power dissipation PO = 700 mW",
+      "datasheet": "TLP3543A.pdf"
+    },
+    "TPS563200DDCR": {
+      "kind": "regulator",
+      "v_max": 19,
+      "i_max": null,
+      "p_max": null,
+      "source": "Page 5, 6.1 Absolute Maximum Ratings: 'Input voltage range VIN, EN \u20130.3 19 V' (SW also 19 V). Continuous output current not stated in a ratings table on provided pages (page 2 revision history only mentions 'TPS563200 - 3A converter' as a feature description); no power dissipation stated.",
+      "datasheet": "TPS563200DDCR.pdf"
+    },
+    "PWR263S-35-5R00F": {
+      "kind": "resistor",
+      "v_max": 13.23,
+      "i_max": 2.65,
+      "p_max": 35,
+      "ohms": 5,
+      "source": "Page 1, Electrical & Thermal Characteristics: 'Power Rating @ 25 \u00b0C Case Temperature 35 W'; 'Operating Voltage \u221aP*R with a maximum of 250 V' gives \u221a(35 W \u00d7 5 \u03a9) = 13.23 V; Popular Resistance Values row '5R00 5 \u03a9'. i_max is not stated in the datasheet, it is derived as V/R = 13.23 V / 5 \u03a9 = 2.65 A. The power rating applies at 25 \u00b0C case temperature and derates to 0 W at 155 \u00b0C per the Derating Curve.",
+      "datasheet": "PWR263S-35-5R00F.pdf"
+    },
+    "BLM21PG221SN1D": {
+      "kind": "ferrite",
+      "v_max": null,
+      "i_max": 2.0,
+      "p_max": null,
+      "ohms": null,
+      "source": "Page 1, section 3 'Part Number and Rating', row BLM21PG221SN1D: Impedance 220\u00b125% \u03a9 at 100 MHz, Rated current 2000 mA at 85\u00b0C ambient (1250 mA at 125\u00b0C ambient, derating per note *1 on page 3), DC resistance 0.045 \u03a9 max initial / 0.09 \u03a9 after testing. No rated voltage or power dissipation stated.",
+      "datasheet": "BLM21PG221SN1D.pdf"
+    },
+    "MCP2562": {
+      "kind": "transceiver",
+      "v_max": 7.0,
+      "i_max": null,
+      "p_max": null,
+      "ohms": null,
+      "source": "Page 8, Absolute Maximum Ratings: 'VDD ... 7.0V' (also 'VIO ... 7.0V'; MCP2562 variant has VIO pin). No continuous current or power dissipation rating stated on provided pages.",
+      "datasheet": "MCP2562.pdf"
+    },
+    "STM32H750VBTx": {
+      "kind": "mcu",
+      "v_max": 4.0,
+      "i_max": null,
+      "p_max": null,
+      "ohms": null,
+      "source": "Page 94, Table 19 Voltage characteristics, row 'VDDX - VSS External main supply voltage (including VDD, VDDLDO, VDDA, VDD33USB, VBAT)' Max 4.0 V. Table 20 (current characteristics, \u03a3IVDD) and Table 21 (thermal) are referenced but not included in the provided pages, so i_max and p_max are null.",
+      "datasheet": "STM32H750VBTx.pdf"
+    }
+  },
+  "defaults": {
+    "R_0805": {
+      "kind": "resistor",
+      "p_max": 0.125,
+      "v_max": 150,
+      "note": "Standard 0805 thick-film rating. The BOM gives no part number."
+    },
+    "C_0805": {
+      "kind": "capacitor",
+      "v_max": 16,
+      "note": "Assumed 16 V MLCC. The BOM gives no part number."
+    }
+  }
+}

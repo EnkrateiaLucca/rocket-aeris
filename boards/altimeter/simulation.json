@@ -1,0 +1,43 @@
+{
+    "format_version": "1.2",
+    "frequency": {
+        "start": 100000000.0,
+        "stop": 3000000000.0
+    },
+    "max_steps": 40000,
+    "pixel_size": 10,
+    "ports": [
+        {
+            "width": 150,
+            "length": 600,
+            "impedance": 50,
+            "layer": 0,
+            "plane": 1,
+            "excite": true
+        },
+        {
+            "width": 150,
+            "length": 600,
+            "impedance": 50,
+            "layer": 0,
+            "plane": 1,
+            "excite": false
+        }
+    ],
+    "traces": [
+        {
+            "start": 0,
+            "stop": 1,
+            "name": "SDMMC1_CK",
+            "nets": [
+                "/mcu/SDMMC1_CK"
+            ]
+        }
+    ],
+    "grid": {
+        "optimal": 50,
+        "diagonal": 50,
+        "perpendicular": 140,
+        "max": 140
+    }
+}

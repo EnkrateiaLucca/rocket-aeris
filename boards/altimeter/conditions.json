@@ -1,0 +1,28 @@
+{
+  "note": "Working conditions of the board. The four spec inputs do not carry them. Rails named like +3V3 are read from the netlist; the rest is stated here. Values below are demo assumptions for a 3S LiPo and a 1 ohm e-match.",
+  "nets": {
+    "+BATT": 12.6,
+    "+PYRO": 12.6,
+    "+12V": 12.6
+  },
+  "currents": {
+    "F1": 3.5,
+    "R15": 3.5,
+    "R30": 2.1,
+    "U9": 2.1,
+    "U10": 2.1,
+    "R44": 2.1,
+    "U12": 2.1,
+    "U13": 2.1,
+    "U7": 0.6,
+    "L1": 0.6,
+    "R16": 0.6,
+    "U6": 0.15,
+    "FB1": 0.05,
+    "R1": 0.05
+  },
+  "simulated_net": {
+    "name": "/mcu/SDMMC1_CK",
+    "volts": 3.3
+  }
+}
