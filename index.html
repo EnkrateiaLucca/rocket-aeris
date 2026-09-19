@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AERIS · EMF – PCB Analysis</title>
+<style>
+  :root { --bg:#16171b; --panel:#1f2026; --line:#32343d; --text:#e9e9ec; --muted:#9a9ba6; --accent:#ff6a13; --code:#0e0f12; --good:#4cc38a; --bad:#ff5d5d; --warn:#f2c037; color-scheme:dark; }
+  :root[data-theme="light"] { --bg:#f6f6f4; --panel:#ffffff; --line:#d9d9d4; --text:#1b1c20; --muted:#5f606b; --accent:#d9540a; --code:#ecece8; --good:#1a8a55; --bad:#c62828; --warn:#a97900; color-scheme:light; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:1100px; margin:0 auto; padding:32px 20px 64px; }
+  header small { color:var(--accent); font-weight:700; letter-spacing:.12em; font-size:11px; }
+  h1 { margin:2px 0 4px; font-size:26px; }
+  header p, .hint { color:var(--muted); margin:0; }
+  h2 { font-size:15px; margin:32px 0 12px; padding-left:10px; border-left:3px solid var(--accent); }
+  .bar { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:24px; padding:14px; background:var(--panel); border:1px solid var(--line); border-radius:10px; }
+  select, button { font:inherit; color:var(--text); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:8px 12px; }
+  button { cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  #status { color:var(--muted); flex:1; min-width:180px; }
+  progress { width:100%; height:8px; accent-color:var(--accent); margin-top:12px; }
+  pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:10px; font-size:12px; color:var(--muted); overflow-x:auto; margin:8px 0 0; }
+  .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .tabs button[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); }
+  figure { margin:0; background:#fff; border-radius:10px; padding:8px; min-height:120px; }
+  figure.dark { background:#16171b; border:1px solid var(--line); }
+  #info { margin-bottom:12px; }
+  figure img { display:block; width:100%; height:auto; }
+  .inputs { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:12px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .card b { display:block; }
+  .card small { color:var(--muted); }
+  .card .mark { float:right; font-weight:700; }
+  .yes { color:var(--good); } .no { color:var(--bad); } .extra { color:var(--accent); }
+  #verdict { display:flex; flex-wrap:wrap; align-items:center; gap:16px; }
+  #badge { font-size:22px; font-weight:800; letter-spacing:.04em; padding:10px 18px; border-radius:10px; border:2px solid currentColor; }
+  #problems { list-style:none; padding:0; margin:12px 0 0; }
+  #problems li { padding:8px 12px; border-left:3px solid var(--muted); background:var(--panel); margin-bottom:6px; border-radius:0 8px 8px 0; }
+  #problems li.error { border-color:var(--bad); } #problems li.warning { border-color:var(--warn); }
+  .scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  th, td { text-align:left; padding:6px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .meter { position:relative; width:160px; height:10px; background:var(--bg); border:1px solid var(--line); border-radius:5px; }
+  .meter i { display:block; height:100%; border-radius:4px; background:var(--good); }
+  .meter i.warn { background:var(--warn); } .meter i.fail { background:var(--bad); } .meter i.low { background:#5b8def; }
+  .meter::after { content:""; position:absolute; left:80%; top:-3px; bottom:-3px; width:2px; background:var(--text); }
+  .tag { font-size:11px; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:0 5px; margin-left:6px; }
+  .plots { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <button id="theme" style="float:right" aria-label="Switch between light and dark theme"></button>
+    <small>PROJECT ASCENT · AERIS · ISEL</small>
+    <h1>EMF – PCB Analysis</h1>
+    <p>Reads a board's Gerbers, netlist, BOM and datasheets, simulates it with openEMS, and checks every component against its limits.</p>
+  </header>
+
+  <div class="bar">
+    <label for="board">Board</label>
+    <select id="board"></select>
+    <button id="run" class="primary">Simulate</button>
+    <button id="export">Export report</button>
+    <span id="status" role="status"></span>
+  </div>
+  <progress id="progress" max="100" value="0" hidden></progress>
+  <pre id="log" hidden></pre>
+
+  <section>
+    <h2>Inputs</h2>
+    <div class="inputs" id="inputs"></div>
+  </section>
+
+  <section id="verdictbox" hidden>
+    <h2>Output 1 and 2 — valid or not, and the problems found</h2>
+    <div id="verdict"><span id="badge"></span><span class="hint" id="verdictnote"></span></div>
+    <ul id="problems"></ul>
+  </section>
+
+  <section id="capbox" hidden>
+    <h2>Output 3 — capacity of each component</h2>
+    <p class="hint">Working load divided by the datasheet limit. The vertical mark is the 80% target. <span class="tag">assumed</span> means the BOM has no part number, so a default limit was used.</p>
+    <div class="scroll"><table><thead><tr><th>Ref</th><th>Part</th><th>Check</th><th>Working</th><th>Limit</th><th>Capacity</th><th></th></tr></thead><tbody id="caprows"></tbody></table></div>
+    <button id="capmore" hidden></button>
+  </section>
+
+  <section>
+    <h2>Board — copper layers</h2>
+    <p class="hint" id="info"></p>
+    <div class="tabs" id="copper"></div>
+    <figure class="dark"><img id="boardimg" alt="Copper traces, drill holes and outline of the selected board layer"></figure>
+    <p class="hint" id="boarderr" hidden>Preview unavailable. Is Docker running?</p>
+  </section>
+
+  <section id="output" hidden>
+    <h2>Output 4 — EMF map, peak field strength per layer</h2>
+    <p class="hint" id="emfnote"></p>
+    <div class="tabs" id="layers"></div>
+    <figure><img id="map" alt="Heatmap of peak electric field strength on the selected layer"></figure>
+    <p class="hint">Bright = strong field. The colour scale shows the simulated test pulse; the table below scales it to the net's real voltage.</p>
+    <div class="scroll" id="emftable"></div>
+
+    <h2>Signal plots</h2>
+    <div class="plots" id="plots"></div>
+  </section>
+</main>
+
+<script>
+// Theme: saved choice, else the system setting. Set before first paint of the content below.
+const root = document.documentElement;
+const setTheme = t => { root.dataset.theme = t; document.getElementById("theme").textContent = t === "light" ? "Dark theme" : "Light theme"; };
+let saved = null; try { saved = localStorage.getItem("theme"); } catch {}
+setTheme(saved || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
+document.getElementById("theme").onclick = () => { const t = root.dataset.theme === "light" ? "dark" : "light"; setTheme(t); try { localStorage.setItem("theme", t); } catch {} };
+
+const LABELS = { top_over: "Above board", bottom_over: "Below board", F_Cu: "Top copper", B_Cu: "Bottom copper" };
+const ORDER = ["top_over", "F_Cu"];
+const $ = id => document.getElementById(id);
+let layer = null, shown = "", shownBoard = "", timer = null;
+
+const api = (path, opts) => fetch(path, opts).then(r => r.json());
+const board = () => encodeURIComponent($("board").value);
+
+function showLayer(name) {
+  layer = name;
+  for (const b of $("layers").children) b.setAttribute("aria-pressed", b.dataset.layer === name);
+  $("map").src = `/map?board=${board()}&layer=${encodeURIComponent(name)}&t=${Date.now()}`;
+}
+
+const label = name => LABELS[name] || name.replace(/^In(\d+)_Cu$/, "Inner copper $1").replace(/^dielectric_(\d+)$/, "Dielectric $1").replaceAll("_", " ");
+
+function tabs(container, names, onPick) {
+  container.replaceChildren(...names.map(name => {
+    const b = document.createElement("button");
+    b.textContent = label(name);
+    b.dataset.layer = name;
+    b.onclick = () => onPick(name);
+    return b;
+  }));
+}
+
+function showCopper(name) {
+  for (const b of $("copper").children) b.setAttribute("aria-pressed", b.dataset.layer === name);
+  $("boarderr").hidden = true;
+  $("boardimg").hidden = false;
+  $("boardimg").src = `/board?board=${board()}&layer=${encodeURIComponent(name)}`;
+}
+$("boardimg").onerror = () => { $("boardimg").hidden = true; $("boarderr").hidden = false; };
+
+function showBoard(s) {
+  if (shownBoard === $("board").value) return;
+  shownBoard = $("board").value;
+  const i = s.info;
+  $("info").textContent = `${i.copper_layers} copper layers · ${i.ports} signal ports · simulated from ${i.f_start_ghz} to ${i.f_stop_ghz} GHz`;
+  tabs($("copper"), s.copper, showCopper);
+  if (s.copper.length) showCopper(s.copper[0]);
+}
+
+function showResults(s) {
+  const key = $("board").value + s.layers.join() + s.plots.join();
+  $("output").hidden = !s.layers.length;
+  if (!s.layers.length || key === shown) return;
+  shown = key;
+  const sorted = [...s.layers].sort((a, b) => (ORDER.indexOf(a) + 1 || 99) - (ORDER.indexOf(b) + 1 || 99));
+  tabs($("layers"), sorted, showLayer);
+  showLayer(sorted[0]);
+  $("plots").replaceChildren(...s.plots.map(name => {
+    const f = document.createElement("figure"), img = document.createElement("img");
+    img.src = `/plot?board=${board()}&name=${encodeURIComponent(name)}&t=${Date.now()}`;
+    img.alt = name.replace(".png", "").replaceAll("_", " ");
+    f.append(img);
+    return f;
+  }));
+}
+
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids); return n; };
+let showAllCaps = false, lastReport = null;
+
+function showReport(r) {
+  lastReport = r;
+  const i = r.inputs, c = r.counts || {};
+  const card = (title, ok, detail, cls) => el("div", { className: "card" },
+    el("span", { className: "mark " + (cls || (ok ? "yes" : "no")), textContent: cls ? "extra" : ok ? "\u2713" : "missing" }),
+    el("b", { textContent: title }), el("small", { textContent: detail }));
+  $("inputs").replaceChildren(
+    card("Gerber files (.gbr)", i.gerber.length, `${i.gerber.length} layers`),
+    card("Netlist (.d356)", i.netlist, i.netlist ? `${c.pads} pads on ${c.nets} nets` : "netlist.d356 not found"),
+    card("Bill of Materials (.txt)", i.bom, i.bom ? `${c.parts} components` : "bom.txt not found"),
+    card("Datasheets (.pdf)", i.datasheets.length, `${i.datasheets.length} PDFs, limits read for ${c.limits || 0} parts`),
+    card("Working conditions", !!r.conditions, "Rail voltages and currents. Not in the spec, but capacity needs them.", "extra"));
+
+  $("verdictbox").hidden = false;
+  const badge = $("badge");
+  badge.textContent = r.valid === null ? "NOT CHECKED" : r.valid ? "VALID" : "NOT VALID";
+  badge.className = r.valid === null ? "" : r.valid ? "yes" : "no";
+  const errors = r.problems.filter(p => p.level === "error").length;
+  $("verdictnote").textContent = r.valid === null ? "" :
+    `${r.rows.length} components checked, ${errors} over their limit, ${r.problems.length - errors} warnings, ${r.skipped.length} without limits or working data.`;
+  $("problems").replaceChildren(...r.problems.map(p => el("li", { className: p.level, textContent: p.text })));
+
+  $("capbox").hidden = !r.rows.length;
+  const rows = [...r.rows].sort((a, b) => b.capacity - a.capacity);
+  const shown = showAllCaps ? rows : rows.slice(0, 15);
+  $("caprows").replaceChildren(...shown.map(x => el("tr", {},
+    el("td", { textContent: x.ref }),
+    el("td", {}, x.part, ...(x.source === "assumed" ? [el("span", { className: "tag", textContent: "assumed" })] : [])),
+    el("td", { textContent: x.check }),
+    el("td", { className: "num", textContent: `${x.use} ${x.unit}` }),
+    el("td", { className: "num", textContent: `${x.limit} ${x.unit}` }),
+    el("td", {}, el("div", { className: "meter", title: `${x.capacity}%` }, el("i", { className: x.status, style: `width:${Math.min(100, x.capacity)}%` }))),
+    el("td", { className: "num", textContent: `${x.capacity}%` }))));
+  $("capmore").hidden = rows.length <= 15;
+  $("capmore").textContent = showAllCaps ? "Show top 15" : `Show all ${rows.length} components`;
+
+  const e = r.emf;
+  $("emfnote").textContent = e ? `Simulated net: ${e.net}, driven at ${e.volts} V.` : "";
+  $("emftable").replaceChildren(...(!e ? [] : [el("table", {},
+    el("thead", {}, el("tr", {}, ...["Layer", "Medium", "Peak field", "Share of breakdown strength"].map(t => el("th", { textContent: t })))),
+    el("tbody", {}, ...e.layers.map(l => el("tr", {},
+      el("td", { textContent: label(l.layer) }), el("td", { textContent: l.medium }),
+      el("td", { className: "num", textContent: `${(l.e_max_v_per_m / 1000).toFixed(1)} kV/m` }),
+      el("td", { className: "num", textContent: `${l.capacity}%` }))))),
+    el("p", { className: "hint", textContent: e.exposed.length ? "Components in the strongest field: " +
+      e.exposed.map(x => `${x.ref} (${(x.e_v_per_m / 1000).toFixed(1)} kV/m)`).join(", ") : "" })]));
+}
+$("capmore").onclick = () => { showAllCaps = !showAllCaps; showReport(lastReport); };
+
+async function refresh() {
+  const s = await api(`/api/status?board=${board()}`);
+  const running = s.state === "running";
+  $("run").disabled = running || s.busy;
+  $("export").disabled = running;
+  $("progress").hidden = !running;
+  $("progress").value = s.progress;
+  $("log").hidden = !(running || s.state === "error");
+  $("log").textContent = s.log.join("\n");
+  $("status").textContent =
+    running ? (s.progress ? `Simulating… ${s.progress}%` : "Preparing the model. The progress bar starts with the first timestep.") :
+    s.busy ? "Another board is simulating." :
+    s.state === "error" ? "Simulation failed. Is Docker running?" :
+    s.layers.length ? "Results ready." : "No results yet. Press Simulate.";
+  showBoard(s);
+  if (!running) { showResults(s); api(`/api/report?board=${board()}`).then(r => r.running || showReport(r)); }
+  else $("output").hidden = true;
+  clearTimeout(timer);
+  if (running || s.busy) timer = setTimeout(refresh, 1000);
+}
+
+$("run").onclick = async () => {
+  shown = "";
+  await api(`/api/simulate?board=${board()}`, { method: "POST" });
+  refresh();
+};
+$("export").onclick = () => window.open(`/report.html?board=${board()}`, "_blank");
+$("board").onchange = () => { shown = ""; refresh(); };
+
+api("/api/boards").then(names => {
+  $("board").replaceChildren(...names.map(n => new Option(n, n)));
+  refresh();
+});
+</script>
+</body>
+</html>
